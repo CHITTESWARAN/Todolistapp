@@ -1,5 +1,5 @@
-{"homepage":"https://github.com/CHITTESWARAN/TaskRemainderApp.git",
-  "name": "project1",
+{"homepage":"https:/CHITTESWARAN J.github.io/Todolistapp",
+  "name": "Todolistapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -15,8 +15,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "predeploy":"npm run built",
-    "deploy" :"gh-pages -d built",
+    "predeploy" : "npm run build",
+     "deploy" : "gh-pages -d build",
     "built": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
