@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Header from './components/Header';
 import Content from './components/Contents'; // Ensure correct import path
 import Footer from './Footer';
@@ -6,29 +6,55 @@ import Additem from './Additem';
 import Searchitem from './Searchitem';
 
 function App() {
-    const [items, setItems] = useState(JSON.parse(localStorage.getItem('todolist')));
+    const API_URL="http://localhost:3500/items";
+    const [items, setItems] = useState([]);
+    const[newItem,setNewItem]=useState('')
+    const[search,setSearch]=useState('')
+    const[fetchError,setfetchError]=useState(null)
+    const[Isloading,setIsloading]=useState(true)
 
-  const[newItem,setNewItem]=useState('')
-  const[search,setsearch]=useState('')
+ 
+  useEffect(()=>{
+    const fetchItems=async()=>
+    {  try{const response = await fetch(API_URL);
+        if(!response.ok) throw Error("Data not recived")
+    const listItems =await response.json();
+    setItems(listItems);
+    setfetchError(null)
+  }
+  catch(err)
+  
+  {setfetchError(err.message)}
+       finally{
+        setIsloading(false)
+       }}
+  setTimeout(()=>{
+    (async()=>await fetchItems())()},2000)
+   },[])
+  
+
+
+  
+
   const addItem =(item)=>{
     const id=items.length?items[items.length-1].id+1:1;
     const addNewItem ={ id,checked:false,item}
     const listItems=[...items,addNewItem]
     setItems(listItems)
-    localStorage.setItem("todolist",JSON.stringify(listItems))
+   
   }
     const handleCheck = (id) => {
         const listItems = items.map((item) =>
             item.id === id ? { ...item, checked: !item.checked } : item
         );
         setItems(listItems);
-        localStorage.setItem("todolist", JSON.stringify(listItems));
+
     };
 
     const handleliRemove = (id) => {
         const newItems = items.filter((item) => item.id !== id);
         setItems(newItems);
-        localStorage.setItem("todolist", JSON.stringify(newItems));
+       
     };
     const handleSubmit=(e)=>{
       e.preventDefault() 
@@ -47,15 +73,24 @@ function App() {
             handleSubmit={handleSubmit}/>
             <Searchitem 
             search={search}
-            setSearch={setsearch}/>
-            <Content
-                items={items.filter(item =>(item.item).toLowerCase().includes(search.toLowerCase()))}
-                handleCheck={handleCheck}
-                handleliRemove={handleliRemove}
-            />
+            setSearch={setSearch}/>
+            <main>
+
+                {Isloading&& <p> 
+                loading items...</p>}
+                {fetchError&& <p>{`Error:${fetchError}` 
+                }</p>} 
+            {!Isloading&& !fetchError&&<Content
+               items={items.filter(item => item.item && item.item.toLowerCase().includes(search.toLowerCase()))}
+             handleCheck={handleCheck}
+           handleliRemove={handleliRemove}
+/>
+}
+            </main>
             <Footer length={items.length} />
         </div>
     );
 }
+
 
 export default App;

@@ -4,7 +4,7 @@ import Itemlist from './itemlist';
 
 const Content = ({ items, handleCheck, handleliRemove }) => {
     return (
-        <main>
+        <>
             {items.length > 0 ? (
                  
                  <Itemlist  
@@ -14,7 +14,7 @@ const Content = ({ items, handleCheck, handleliRemove }) => {
             ) : (
                 <h2 className="lettask">Task not available</h2>
             )}
-        </main>
+        </>
     );
 };
 
